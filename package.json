@@ -1,0 +1,21 @@
+{
+  "name": "node-cli-address-book",
+  "version": "0.0.1",
+  "description": "CLI address book with NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "cli",
+    "address",
+    "book",
+    "decodemtl",
+    "project",
+    "class",
+    "course"
+  ],
+  "author": "Ziad Saab <ziad.saab@gmail.com>",
+  "license": "MIT"
+}
