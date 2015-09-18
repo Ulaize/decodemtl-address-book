@@ -17,5 +17,11 @@
     "course"
   ],
   "author": "Ziad Saab <ziad.saab@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.10.0",
+    "cli-table": "^0.3.1",
+    "colors": "^1.1.2",
+    "inquirer": "^0.10.0"
+  }
 }
