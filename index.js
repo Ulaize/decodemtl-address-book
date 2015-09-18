@@ -9,17 +9,15 @@ function start() {
     mainProgramLoop(addressBook);
 }
 function mainProgramLoop(addressBook) {
-    displayMainMenu().then(function(mainMenuChoice) {
+    return displayMenu('main').then(function(mainMenuChoice) {
         
         switch(mainMenuChoice) {
             case 'CREATE':
-                createEntry(addressBook)
+                return createEntry(addressBook)
                     .then(displayEntry)
                     .then(mainProgramLoop.bind(null, addressBook));
-                break;
             case 'SEARCH':
-                searchEntries(addressBook).then(mainProgramLoop.bind(null, addressBook));
-                break;
+                return searchEntries(addressBook).then(mainProgramLoop.bind(null, addressBook));
             case 'EXIT':
                 break;
             default:
@@ -29,20 +27,27 @@ function mainProgramLoop(addressBook) {
     });
 }
 
-function displayMainMenu() {
+function displayMenu(menuName) {
     return prompt([
         {
             type: 'list',
-            name: 'mainMenuAnswer',
+            name: 'menuAnswer',
             message: 'What do you want to do?',
-            choices: menus.main
+            choices: menus[menuName]
         }
     ]).then(function(answers) {
-        return answers.mainMenuAnswer;
+        return answers.menuAnswer;
     });
 }
 
 function createEntry(addressBook) {
+    return promptEntry().then(function(entry) {
+        addressBook.addEntry(entry);
+        return entry;
+    });
+}
+
+function promptEntry() {
     return prompt(helpers.buildBasicQuestions()).bind({}).then(function(basicAnswers) {
         this.basicAnswers = basicAnswers;
         return this.basicAnswers.addressTypes.map(helpers.buildAddressQuestions);
@@ -96,19 +101,34 @@ function createEntry(addressBook) {
             entry.setPhone(phoneType, phone);
         });
         
-        addressBook.addEntry(entry);
         return entry;
     }).bind();
+}
+
+function editEntry(entry) {
+    
 }
 
 function displayEntry(entry) {
     var entryTable = helpers.getTableForEntry(entry);
     console.log(entryTable.toString());
+    
+    return displayMenu('view').then(function(viewMenuChoice) {
+        switch(viewMenuChoice) {
+            case 'EDIT':
+                return editEntry(entry)
+                    .then(displayEntry);
+            case 'DELETE':
+                break;
+            case 'BACK_TO_MAIN':
+                break;
+            default:
+                console.error("Invalid choice, please try again.");
+                return displayEntry(entry);
+        }
+    });
 }
 
-function displayEntryMenu() {
-    
-}
 
 function searchEntries(addressBook) {
     
