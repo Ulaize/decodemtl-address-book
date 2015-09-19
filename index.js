@@ -111,6 +111,16 @@ function editEntry(entry) {
     return promptEntry(entry);
 }
 
+function deleteEntry(entry) {
+    return prompt([{type: 'confirm', name: 'confirm', message: 'Are you sure?'}])
+        .then(function(results) {
+            if (results.confirm) {
+                entry.addressBook.deleteEntry(entry);
+            }
+            return results.confirm;
+        });
+}
+
 function displayEntry(entry) {
     var entryTable = helpers.getTableForEntry(entry);
     console.log(entryTable.toString());
@@ -121,7 +131,12 @@ function displayEntry(entry) {
                 return editEntry(entry)
                     .then(displayEntry);
             case 'DELETE':
-                break;
+                return deleteEntry(entry)
+                    .then(function(wasDeleted) {
+                        if (!wasDeleted) {
+                            return displayEntry(entry);
+                        }
+                    });
             case 'BACK_TO_MAIN':
                 break;
             default:
