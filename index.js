@@ -148,9 +148,29 @@ function displayEntry(entry) {
 
 
 function searchEntries(addressBook) {
-    
-}
-
-function exitProgram() {
-    
+    return prompt([{name: 'name', message: 'Enter a name to search for'}])
+        .then(function(answers) {
+            return addressBook.findEntriesByName(answers.name);
+        })
+        .then(function(entries) {
+            if (!entries.length) {
+                console.log("No entries were found".bold);
+            }
+            var menuOptions = entries.map(function(entry) {
+                return {name: [entry.lastName.bold, entry.firstName].join(', '), value: entry};
+            }).concat(menus.search);
+            
+            return prompt([{name: 'opt', message: 'What do you want to do?', type: 'list', choices: menuOptions}]);
+        })
+        .then(function(answers) {
+            if (answers.opt === 'SEARCH_AGAIN') {
+                return searchEntries(addressBook);
+            }
+            else if (answers.opt === 'BACK_TO_MAIN') {
+                return;
+            }
+            else {
+                return displayEntry(answers.opt);
+            }
+        });
 }
