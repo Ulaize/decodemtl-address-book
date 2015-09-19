@@ -47,23 +47,25 @@ function createEntry(addressBook) {
     });
 }
 
-function promptEntry() {
-    return prompt(helpers.buildBasicQuestions()).bind({}).then(function(basicAnswers) {
+function promptEntry(originalEntry) {
+    originalEntry = originalEntry || new ab.Entry();
+    
+    return prompt(helpers.buildBasicQuestions(originalEntry)).bind({}).then(function(basicAnswers) {
         this.basicAnswers = basicAnswers;
-        return this.basicAnswers.addressTypes.map(helpers.buildAddressQuestions);
+        return this.basicAnswers.addressTypes.map(helpers.buildAddressQuestions.bind(null, originalEntry));
         
     }).map(function(addressQuestions) {
         return prompt(addressQuestions);
     }, {concurrency: 1}).then(function(addressAnswers) {
         this.addressAnswers = addressAnswers;
         
-        return this.basicAnswers.emailTypes.map(helpers.buildEmailQuestions);
+        return this.basicAnswers.emailTypes.map(helpers.buildEmailQuestions.bind(null, originalEntry));
     }).map(function(emailQuestions) {
         return prompt(emailQuestions);
     }, {concurrency: 1}).then(function(emailAnswers) {
         this.emailAnswers = emailAnswers;
         
-        return this.basicAnswers.phoneTypes.map(helpers.buildPhoneQuestions);
+        return this.basicAnswers.phoneTypes.map(helpers.buildPhoneQuestions.bind(null, originalEntry));
     }).map(function(phoneQuestions) {
         return prompt(phoneQuestions);
     }, {concurrency: 1}).then(function (phoneAnswers) {
@@ -106,7 +108,7 @@ function promptEntry() {
 }
 
 function editEntry(entry) {
-    
+    return promptEntry(entry);
 }
 
 function displayEntry(entry) {
